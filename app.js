@@ -20,9 +20,12 @@ var configs = global.configs = require('./configs/configs.js');
 
 // view engine setup
 hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerHelper('JSON', function(object){
+	return new hbs.SafeString(JSON.stringify(object));
+});
+//hbs.registerPartial('partial', fs.readFileSync(__dirname + '/views/partial.hbs', 'utf8'));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-//hbs.registerPartial('partial', fs.readFileSync(__dirname + '/views/partial.hbs', 'utf8'));
 
 global.redis = new Redis(configs.redisOptions);
 global.db = new DB(configs.dbConfig);
@@ -50,9 +53,10 @@ app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  // var err = new Error('Not Found');
+  // err.status = 404;
+  // next(err);
+  res.render('404');
 });
 
 // error handler
@@ -63,7 +67,11 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  var contype = req.headers['content-type'];
+  if (!contype || contype.indexOf('application/json') !== 0)
+    res.render('error');
+  else
+    res.json({code: 500, error: err });
 });
 
 module.exports = app;

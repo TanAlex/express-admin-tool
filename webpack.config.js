@@ -4,7 +4,8 @@ var webpack = require('webpack');
 module.exports = {
   entry: {
       //common: './src/javascripts/common.js',
-      home: './src/javascripts/home.js'
+      home:  './src/javascripts/home.js',
+      login: './src/javascripts/login.js'
   },
   output: {
     path: path.resolve(__dirname, './public/build'),

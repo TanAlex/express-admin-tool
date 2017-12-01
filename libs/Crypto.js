@@ -41,6 +41,9 @@ var saltHashPassword = function (userpassword) {
  * @param {string} hash - hash read from database or redis, mostly from the 'password' column
  */
 var validatePassword = function(password, hash, salt) {
+  password = password || "";
+  hash = hash || "";
+  salt = salt || "";
   var result = sha512(password, salt);
   return hash == result.hash;
 }
