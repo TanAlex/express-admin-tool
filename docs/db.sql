@@ -11,10 +11,14 @@ CREATE TABLE `sec_users` (
   `actcode` varchar(255) DEFAULT NULL,
   `disabled` tinyint(1) NOT NULL default '0',
   `activated` tinyint(1) NOT NULL default '0',
+  `register_date` datetime,
   INDEX (`username`),
   UNIQUE KEY  (`email`),
   PRIMARY KEY  (`user_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `sec_users` (`user_id`,`username`,`password`,`salt`,`phone`,`social_id`,`email`,`roles`,`actcode`,`disabled`,`activated`,`register_date`) VALUES (1,'ttan','189351fed18cf0615778a9026a5f8709a1c8ef4d694f4cff67188da6e14336934280d3ca8a1e25588c6308c15a7b79b2e4dd8b802c1c88d7a503007bfe4960e8','0dc718502c542417','2588053',NULL,'tantingli@gmail.com','["admin"]',NULL,0,1,now());
+
 
 
 

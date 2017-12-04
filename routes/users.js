@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var Auth = require('../modules/Auth');
 
-
+router.use(Auth.validateSession());
 
 /* GET users listing. */
-router.get('/', async function (req, res, next) {
+router.get('/',  async function (req, res, next) {
   if (req.session.viewsCount) {
     req.session.viewsCount++;
   } else {

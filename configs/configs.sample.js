@@ -2,6 +2,10 @@
 
 var config = {};
 
+//if the app is hosted in the server as http://example.com/myapp
+//then set baseAppPath to "/myapp"
+config.baseAppPath = "";
+
 config.dbConfig= {
   connectionLimit : 10,
   host: 'localhost',

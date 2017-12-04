@@ -21,7 +21,7 @@ var configs = global.configs = require('./configs/configs.js');
 // view engine setup
 hbs.registerPartials(__dirname + '/views/partials');
 hbs.registerHelper('JSON', function(object){
-	return new hbs.SafeString(JSON.stringify(object));
+	return new hbs.SafeString('JSON.parse("'+JSON.stringify(object).replace(/['"]/g, function(m){ return m == '"'? "\\\"":"'"})+'")');
 });
 //hbs.registerPartial('partial', fs.readFileSync(__dirname + '/views/partial.hbs', 'utf8'));
 app.set('views', path.join(__dirname, 'views'));
@@ -29,6 +29,7 @@ app.set('view engine', 'hbs');
 
 global.redis = new Redis(configs.redisOptions);
 global.db = new DB(configs.dbConfig);
+
 
 
 //app.set('configs', configs);

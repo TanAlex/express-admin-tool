@@ -47,13 +47,36 @@ db = new DB(configs.dbConfig);
 
 var users = new Users(db);
 try {
-  users.getUserById(2).then(function (user) {
-    console.log('user:', user);
-  }).catch(function (err) { console.log("promise-catch:", err) });
+  // users.registerUser("ttl5@ttl.com", "test123").then( (res) => {
+  //   console.log("res:", res);
+  //   console.log("affectedRows:", res.results.affectedRows);
+  // }).catch(function(error){
+  //   console.log(error);
+  // });
 
-  users.getUserByEmail('ttan').then(function (user) {
-    console.log('user:', user);
+
+  // users.activateUser("ffd01dede297f0f4").then( (res) => {
+  //   console.log("res:", res);
+  //   console.log("affectedRows:", res.results.affectedRows);
+  // }).catch(function(error){
+  //   console.log(error);
+  // });
+
+  users.generateResetPasswordCode("ttl5@ttl.com").then((res) => {
+    console.log("res:", res);
+    if (res.OK){
+      return users.decodeResetPasswordCode(res.actCode).then((res)=>{
+        console.log("res:", res);
+        if (res.OK)
+          return users.activateUser(res.actCode).then( (res) => {
+            console.log("res:", res);
+          });
+      })
+    }
+  }).catch(function(error){
+    console.log(error);
   });
+
 } catch (error) {
   console.log("try-catch:", error);
 }
