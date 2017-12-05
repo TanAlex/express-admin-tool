@@ -62,9 +62,10 @@ Users.prototype.registerUser = async function (email, password) {
     return { OK: false, message: "user already exist" };
   } else {
     var actcode = crypto.genRandomString(16);
+    var username = email.split('@')[0];
     var { salt, hash } = crypto.saltHashPassword(password);
     var dbRes = await self.db.queryAsync(`INSERT INTO sec_users (username, password, salt, phone, email, roles, actcode, disabled, activated, register_date) 
-    VALUES    ("",?, ?, "", ?, "['user']", ?, 0, 0, now())`, [hash, salt, email, actcode]);
+    VALUES    (?, ?, ?, "", ?, "['user']", ?, 0, 0, now())`, [username, hash, salt, email, actcode]);
     // dbRes:
     // { results:
     //    OkPacket {
@@ -105,7 +106,7 @@ Users.prototype.activateUser = async function (actCode) {
       var dbRes = await self.db.queryAsync(`UPDATE sec_users SET activated = 1 WHERE actcode = ?`, [actCode]);
       if (dbRes.results.affectedRows >= 1) {
         //successfully inserted      
-        return { OK: true, results: dbRes.results };
+        return { OK: true, results: dbRes.results, message: "Successfully activated" };
       } else {
         return { OK: false, message: "Failed to update user" };;
       }
@@ -173,14 +174,14 @@ Users.prototype.generateResetPasswordCode = async function (email) {
     var finalCode = actCode + new Buffer(email).toString('base64');
     var dbRes = await self.db.queryAsync(`UPDATE sec_users SET actcode = ? WHERE email = ?`, [actCode, email]);
     if (dbRes.results.affectedRows >= 1) {
-      return { OK: true, actCode: finalCode };
-    }else{
+      return { OK: true, actCode: finalCode, message: "Successfully generated" };
+    } else {
       return { OK: false, message: "can't update actcode" };
     }
   }
 }
 
-Users.prototype.decodeResetPasswordCode = async function (code) {
+Users.prototype.decodeResetPasswordCode = function (code) {
   var actCode = code.substring(0, 16);
   var email = code.substring(16);
   if (!actCode || !email) {

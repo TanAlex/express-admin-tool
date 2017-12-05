@@ -8,6 +8,7 @@
     "watch": "cross-env NODE_ENV=development webpack --progress --colors --watch"
   },
   "dependencies": {
+    "alertify.js": "^1.0.12",
     "async": "^2.5.0",
     "axios": "^0.17.1",
     "body-parser": "~1.18.2",

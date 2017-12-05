@@ -6,8 +6,7 @@ import alertify from 'alertify.js';
 
 // import store from "../assets/store/store_home.js";
 import registerPanel from './login/register.vue';
-import forgotPasswordPanel from './login/forgot_password.vue';
-import resetPasswordPanel from './login/reset_password.vue';
+// import app_content from '../assets/components/app_content.vue';
 
 //Vue.use(VeeValidate, { events: 'blur' });
 Vue.use(VeeValidate);
@@ -16,15 +15,11 @@ new Vue({
   el: '#login-app',
   //store: store,
   components: {
-    "panel-register": registerPanel,
-    "panel-forget-password": forgotPasswordPanel,
-    "panel-reset-password": resetPasswordPanel
+    "panel-register": registerPanel
   },
   data: function () {
     return {
       help_message: "Please use Email and Password to login",
-      infoMessage: "",
-      showMessage: false,
       context: undefined,
       activeView: "LoginView",
       username: "",
@@ -38,23 +33,10 @@ new Vue({
       this.context = $req.context;
       console.log($req.context);
       if ($req.context && $req.context && $req.context.action == "activate"  ){
-        if (! $req.context.actcode) {
-          this.infoMessage = "There is no actcode provided, can't activate your account";
-        }else{
-          this.infoMessage = $req.context.result.message;
-        }
-        this.showMessage = true;
         alertify.success("successfully called activate");
-      }else if ($req.context && $req.context && $req.context.action == "resetpassword"  ){
-        if ($req.context.result && $req.context.result.OK){
-          this.navToView(ResetPasswordView);
-          //set email and code etc.
-        }else{
-          this.infoMessage = $req.context.result.message;
-        }
-        this.showMessage = true;
-      }     
+      }      
     })
+
   },
   methods: {
     onLogin: function (e) {
@@ -91,7 +73,7 @@ new Vue({
       });
     },
     navToView: function (newViewName) {
-      if ('RegisterView LoginView ForgetPasswordView ResetPasswordView'.toLowerCase().indexOf(newViewName.toLowerCase()) > -1) {
+      if ('RegisterView LoginView ForgetPasswordView'.toLowerCase().indexOf(newViewName.toLowerCase()) > -1) {
         this.activeView = newViewName;
         console.log("newViewName:", newViewName);
       } else {

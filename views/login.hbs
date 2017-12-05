@@ -28,6 +28,10 @@
           <h3>PLEASE LOGIN </h3>
           <small>Social media login coming soon!</small>
         </div>
+        <div class="alert alert-info fade in" v-show="showMessage">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>Info!</strong> \{{infoMessage}}
+        </div>
         <div class="hpanel">
           <div class="panel-body">
             <form action="#" id="loginForm">
@@ -68,9 +72,11 @@
     </div>
   </div>
   <panel-register @cancel="navToView('LoginView')"  v-show="activeView=='RegisterView'"></panel-register>
+  <panel-forget-password @cancel="navToView('LoginView')"  v-show="activeView=='ForgetPasswordView'"></panel-forget-password>
+  <panel-reset-password  @cancel="navToView('LoginView')"  v-show="activeView=='ResetPasswordView'"></panel-reset-password>
   {{> footer}}
 </div>
-{{> bottominclude}}
+
 
 <!-- Vue scripts -->
 <script src="build/login.js"></script> {{!--

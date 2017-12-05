@@ -52,25 +52,23 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  data: function(){
+  data: function() {
     return {
       email: "",
       password: ""
-    }
+    };
   },
-  components: {
-
-  },
-  methods:{
-    onCancel: function(event){
-      this.$emit('cancel', event);
+  components: {},
+  methods: {
+    onCancel: function(event) {
+      this.$emit("cancel", event);
     },
-    onRegister: function (e) {
+    onRegister: function(e) {
       e.preventDefault();
-      this.$validator.validateAll().then((ok) => {
+      this.$validator.validateAll().then(ok => {
         if (ok) {
           //console.log("baseUrl", $req.baseUrl);
           var url = $req.baseUrl + "/api/register";
@@ -78,30 +76,33 @@ export default {
           alertify.parent(elem);
           alertify.logPosition("top right");
 
-          axios.post(url,
-            { email: this.register_email, password: this.register_password }
-          ).then(function (res) {
-            console.log("res:", res);
-            if (res && res.data.result) {
-              //successfully login
-              //console.log(req.session.user);
-              alertify.success("Successfully registered, please try login page");
-              //window.location.replace($req.backUrl);
-            } else {
-              alertify.error("Register failed, please check inputs");
-            }
-          }).catch(function (error) {
-            console.log("error:", error);
-            alertify.error("There were some errors when trying to Register");
-          });
+          axios
+            .post(url, { email: this.email, password: this.password })
+            .then(function(res) {
+              console.log("res:", res);
+              if (res && res.data.result) {
+                //successfully login
+                //console.log(req.session.user);
+                alertify.success(
+                  "Successfully registered, please try login page"
+                );
+                //window.location.replace($req.backUrl);
+              } else {
+                if (typeof res.data.message == "string")
+                  alertify.error("Register failed, " + res.data.message);
+                else alertify.error("Register failed, please check");
+              }
+            })
+            .catch(function(error) {
+              console.log("error:", error);
+              alertify.error("There were some errors when trying to Register");
+            });
         } else {
-          
           alertify.log("Please correct input before submit");
         }
       });
     }
   },
-  computed: {
-  }
+  computed: {}
 };
 </script>

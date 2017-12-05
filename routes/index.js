@@ -1,24 +1,49 @@
 var express = require('express');
 var router = express.Router();
 var apiRouter = require('./api/api');
-var BasicSettings= require('../modules/BasicSettings');
+var BasicSettings = require('../modules/BasicSettings');
+var Users = require('../models/Users');
 
 //router.use(BasicSettings());
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   var username = req.session.user || "not logged in";
   res.render('index', { title: 'Express', username: username });
 });
 
 /* login page */
-router.get('/login', BasicSettings(), function(req, res, next) {
+router.get('/login', BasicSettings(), async function (req, res, next) {
   //console.log("req.settings:", req.settings);
   //if there is a backUrl, after success login, we rediret back
   //If not set, redirect back to /
   req.settings.backUrl = req.params.backUrl || req.settings.baseUrl + "/";
+  var context = undefined;
+  if (req.query.action) {
+    context = {};
+    context.action = req.query.action;
+    var result;
+    try {
+      var users = new Users(global.db);
+      if (req.query.action == "activate" && req.query.actcode) {
+        context.actcode = req.query.actcode;
+        result =  await users.activateUser(req.query.actcode);
+      }else if (req.query.action == "resetpassword" && req.query.actcode){
+        result = users.decodeResetPasswordCode(req.query.actcode);
+        if (result.OK){
+          result = await users.checkResetPasswordCode(result.email, result.actCode);
+        }
+      }
+    } catch (error) {
+      result = { OK: false, message: error.message };
+    }
+    context.result = result;
+  }
+  req.settings.context = context;
   res.render('login', { title: 'Welcome to home', req: req.settings });
 });
+
+
 
 /* all API goes to */
 router.use('/api', apiRouter);
