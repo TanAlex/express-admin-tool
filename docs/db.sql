@@ -1,3 +1,6 @@
+CREATE DATABASE expressadmin;
+USE expressadmin;
+
 DROP  TABLE IF EXISTS `sec_users`;
 CREATE TABLE `sec_users` (
   `user_id` int(10) unsigned NOT NULL auto_increment,
