@@ -39,4 +39,14 @@ config.redisOptions = {
   port: 6379
 }
 
+config.mailOptions = {
+  host: 'email-smtp.us-east-1.amazonaws.com',
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+      user: "xxxxx",  //email user
+      pass: "xxxxxxxxxxx"  //password
+  }
+}
+
 module.exports = config

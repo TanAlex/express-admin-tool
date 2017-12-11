@@ -54,7 +54,7 @@ export default {
           alertify.logPosition("top right");
 
           axios.post(url,
-            { email: this.email, password: this.password }
+            { email: this.email }
           ).then(function (res) {
             console.log("res:", res);
             if (res && res.data.result) {
@@ -66,7 +66,9 @@ export default {
               alertify.error("There were some errors when trying to send reset password email");
             }
           }).catch(function (error) {
-            console.log("error:", error);
+            console.log("error:", error.response);
+            var message = "";
+            if (error.response && error.response.data) message = error.response.data.message;
             alertify.error("There were some errors when trying to send reset password email");
           });
         } else {

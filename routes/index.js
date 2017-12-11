@@ -22,15 +22,22 @@ router.get('/login', BasicSettings(), async function (req, res, next) {
   if (req.query.action) {
     context = {};
     context.action = req.query.action;
-    var result;
+    context.code = req.query.actCode;
+    var result = { OK: false, message: "Unknown action or actCode" };
     try {
       var users = new Users(global.db);
-      if (req.query.action == "activate" && req.query.actcode) {
-        context.actcode = req.query.actcode;
-        result =  await users.activateUser(req.query.actcode);
-      }else if (req.query.action == "resetpassword" && req.query.actcode){
-        result = users.decodeResetPasswordCode(req.query.actcode);
+      if (req.query.action == "activate" && req.query.actCode) {
+        result = users.decodeResetPasswordCode(req.query.actCode);
         if (result.OK){
+          context.actCode = result.actCode;
+          context.email =  result.email;
+          result =  await users.activateUser(req.query.actCode);
+        }
+      }else if (req.query.action == "resetpassword" && req.query.actCode){
+        result = users.decodeResetPasswordCode(req.query.actCode);
+        if (result.OK){
+          context.actCode = result.actCode;
+          context.email =  result.email;
           result = await users.checkResetPasswordCode(result.email, result.actCode);
         }
       }

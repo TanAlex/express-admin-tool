@@ -38,7 +38,7 @@ new Vue({
       this.context = $req.context;
       console.log($req.context);
       if ($req.context && $req.context && $req.context.action == "activate"  ){
-        if (! $req.context.actcode) {
+        if (! $req.context.code) {
           this.infoMessage = "There is no actcode provided, can't activate your account";
         }else{
           this.infoMessage = $req.context.result.message;
@@ -47,13 +47,13 @@ new Vue({
         alertify.success("successfully called activate");
       }else if ($req.context && $req.context && $req.context.action == "resetpassword"  ){
         if ($req.context.result && $req.context.result.OK){
-          this.navToView(ResetPasswordView);
+          this.navToView('ResetPasswordView');
           //set email and code etc.
         }else{
           this.infoMessage = $req.context.result.message;
         }
         this.showMessage = true;
-      }     
+      }  
     })
   },
   methods: {
@@ -90,10 +90,17 @@ new Vue({
         }
       });
     },
-    navToView: function (newViewName) {
+    navToView: function (newViewName , message) {
       if ('RegisterView LoginView ForgetPasswordView ResetPasswordView'.toLowerCase().indexOf(newViewName.toLowerCase()) > -1) {
         this.activeView = newViewName;
         console.log("newViewName:", newViewName);
+
+        if (typeof message != "undefined"){
+          this.infoMessage = message;
+          this.showMessage = true;
+        }else{
+          this.showMessage = false;
+        }
       } else {
         console.log(newViewName + " doesn't exist, can't navTo");
       }

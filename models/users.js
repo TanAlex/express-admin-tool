@@ -95,10 +95,12 @@ Users.prototype.registerUser = async function (email, password) {
  */
 Users.prototype.activateUser = async function (actCode) {
   if (!(this.db instanceof DB)) throw new Error("Need to assign instance variable db before calling");
+
   var self = this;
-  var user = await self.db.getOne("SELECT * FROM sec_users WHERE actcode = ?", [actCode]);
+
+  var user = await self.db.getOne("SELECT * FROM sec_users WHERE actcode = ? AND email = ?", [actCode, email]);
   if (!user) {
-    return { OK: false, message: "no user has this actcode" };
+    return { OK: false, message: "wrong actcode" };
   } else {
     if (user.activated) {
       return { OK: true, message: "user already activated" };
