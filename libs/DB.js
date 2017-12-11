@@ -14,7 +14,10 @@ MySql.prototype.query = function () {
   if (typeof callback == "function") {
     newArgs = Array.prototype.slice.call(arguments,0, argLength-1);
   }else{
-    return connection.query.apply(connection, arguments);
+    //return connection.query.apply(connection, arguments);
+    //throw new Error ("MySQL Query has to be called with callback function");    
+    newArgs = Array.prototype.slice.call(arguments,0);
+    //this will allow you to call a execute type of query without a callback function
   }
   this.pool.getConnection(function(err, connection) {
     if (err) throw new Error("Can't get db connections");
@@ -102,6 +105,85 @@ MySql.prototype.getAll = function(){
   });
   return promise;
 }
+
+MySql.prototype.each = function(){
+  var self = this;
+  var argLength = arguments.length;
+  if (argLength < 1) throw new TypeError("have to have query string");
+  var callback = arguments[argLength-1];
+  var newArgs = [];
+  if (typeof callback == "function" || Promise.resolve(callback) == callback ) {
+    newArgs = Array.prototype.slice.call(arguments,0, argLength-1);
+  }else{
+    //return connection.query.apply(connection, arguments);
+    //throw new Error ("MySQL Query has to be called with callback function");    
+    newArgs = Array.prototype.slice.call(arguments,0);
+    //this will allow you to call a execute type of query without a callback function
+  }
+  
+
+  var promise = new Promise( (resolve, reject) => {
+    var ret = undefined;
+    this.pool.getConnection(function(err, connection) {
+      if (err) reject(error);
+      else{
+        var query = connection.query.apply(connection, newArgs);
+        var processLimit = 3, processCount = 0;
+        query
+        .on('error', function(error) {
+          // Handle error, an 'end' event will be emitted after this as well
+          //console.log("error event :", error);
+          reject(error);
+        })
+        .on('fields', function(fields) {
+          // the field packets for the rows to follow
+          //console.log("fields event :", fields);
+        })
+        .on('result', function(row) {
+          // Pausing the connnection is useful if your processing involves I/O
+          
+          if (processCount > processLimit){
+            connection.pause();
+            //console.log("processCount pause", processCount);
+          }else{
+            processCount ++;
+            //console.log("processCount", processCount);
+          }
+
+          //if resolve is a promise
+          if (Promise.resolve(callback) == callback){
+            callback(row).then(function() {
+              if (processCount < 1) {
+                connection.resume(); 
+              }
+              processCount --;
+            }).catch(function(error){
+              reject(error);
+            });
+          }else if(typeof callback == "function") {
+            // just a regular function            
+            callback(row);          
+            if (processCount < 1) {
+              connection.resume();
+              //console.log("processCount resume", processCount);
+            }
+            processCount --;
+            //console.log("processCount", processCount);
+          }
+        })
+        .on('end', function() {
+          // all rows have been received
+          connection.release();
+          console.log("end event reached");
+        });
+      }
+    })
+  });
+  return promise;
+}
+
+
+
 
 
 module.exports = MySql;

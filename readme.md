@@ -1,6 +1,7 @@
 # Node Express Admin Tool
 
 This is a project to use Node + Express + Vue + VeeValidate + Webpack + MySQL + Redis + Session + NodeMailer 
+
 It will serve as a template for all Admin Tools related web applications on Node platform
 
 ## Getting Started

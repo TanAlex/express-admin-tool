@@ -45,15 +45,21 @@ db = new DB(configs.dbConfig);
 //   console.log("fun");
 // })
 
-var users = new Users(db);
-try {
-  users.getUserById(2).then(function (user) {
-    console.log('user:', user);
-  }).catch(function (err) { console.log("promise-catch:", err) });
+// var users = new Users(db);
+// try {
+//   users.getUserById(2).then(function (user) {
+//     console.log('user:', user);
+//   }).catch(function (err) { console.log("promise-catch:", err) });
 
-  users.getUserByEmail('ttan').then(function (user) {
-    console.log('user:', user);
-  });
-} catch (error) {
-  console.log("try-catch:", error);
-}
+//   users.getUserByEmail('ttan').then(function (user) {
+//     console.log('user:', user);
+//   });
+// } catch (error) {
+//   console.log("try-catch:", error);
+// }
+
+db.each("SELECT * FROM sec_users", function (user) {
+  console.log(user);
+}).catch(function (error) {
+  console.log(error);
+})
