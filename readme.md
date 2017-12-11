@@ -1,13 +1,13 @@
 # Node Express Admin Tool
 
-This is a project to use Node + Express + MySQL + Redis + Session + NodeMailer 
-It will serve as a template for all Admin Tools related web applications
+This is a project to use Node + Express + Vue + VeeValidate + Webpack + MySQL + Redis + Session + NodeMailer 
+It will serve as a template for all Admin Tools related web applications on Node platform
 
 ## Getting Started
 
 Here is the steps to setup environment on AWS
 
-### Setup Node and Docer
+### Setup Node and Docker
 
 Install Node on AWS AMI server
 ```
