@@ -84,5 +84,18 @@ node bin/www
 ```
 
 You can access the app on 
-http://ec2-54-187-197-211.us-west-2.compute.amazonaws.com:3000/login
+http://ec2-54-187-197-211.us-west-2.compute.amazonaws.com/login
+
+
+# Use docker to start app
+
+```
+cd /app/express-admin-tool
+docker build -t simartar:express-admin-tool .
+or 
+npm run docker
+
+docker run --name admin-tool-01 -p 80:3000  -d simartar:express-admin-tool
+docker run -ti --entrypoint=/bin/bash  -p 80:3000  simartar:express-admin-tool
+```
 

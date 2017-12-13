@@ -8,7 +8,11 @@ WORKDIR /app/express-admin-tool
 # where available (npm@5+)
 COPY package*.json ./
 
+
+
 RUN npm install
+#RUN npm link webpack
+#RUN webpack
 # If you are building your code for production
 # RUN npm install --only=production
 
@@ -17,3 +21,5 @@ COPY . .
 
 # replace this with your application's default port
 EXPOSE 3000
+
+CMD [ "npm", "start" ]
