@@ -4,3 +4,4 @@ public/build/
 configs/configs.js
 configs/config.*.js
 configs/locals.js
+logs/*.log
