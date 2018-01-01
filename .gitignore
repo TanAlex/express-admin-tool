@@ -2,3 +2,4 @@ node_modules/
 .vscode/
 public/build/
 logs/*.log
+configs/configs.js
