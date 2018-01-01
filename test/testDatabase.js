@@ -3,7 +3,7 @@ var crypto = require('../libs/Crypto');
 var configs = require('../configs/configs.js');
 var Users = require('../models/Users');
 
-db = new DB(configs.dbConfig);
+//db = new DB(configs.dbConfig);
 
 // db.query("SELECT * FROM sec_users", function(error,  results, fields){
 //   if (!error){
@@ -58,8 +58,19 @@ db = new DB(configs.dbConfig);
 //   console.log("try-catch:", error);
 // }
 
-db.each("SELECT * FROM sec_users", function (user) {
-  console.log(user);
+db = new DB({
+  connectionLimit : 10,
+  host: 'localhost',
+  port: 46306,
+  user: 'admin',
+  password: 'admin123',
+  database: 'e_store'
+});
+
+var sql = "SELECT * FROM `e_store`.`products` WHERE `category_id` = 1 AND `attributes` -> '$.ports.usb' > 0 AND `attributes` -> '$.ports.hdmi' > 0";
+
+db.each(sql, function (prod) {
+  console.log(prod);
 }).catch(function (error) {
   console.log(error);
 })
